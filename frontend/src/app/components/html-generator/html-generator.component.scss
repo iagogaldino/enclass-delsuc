@@ -867,9 +867,12 @@ mat-chip-set {
   // Subtitles area below screenshot
   .subtitle-container.subtitle-below-content {
     flex-shrink: 0; // Don't shrink subtitles
-    padding: 0 20px 20px 20px;
+    padding: 20px !important;
     margin-top: 0;
-    background-color: black;
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(45, 45, 45, 0.98) 100%);
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
 
   .screenshot-full-image {
@@ -1763,8 +1766,12 @@ mat-card-actions {
   // Subtitles area below HTML
   .subtitle-container.subtitle-below-content {
     flex-shrink: 0; // Don't shrink subtitles
-    padding: 0 20px 20px 20px;
+    padding: 20px !important;
     margin-top: 0;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(45, 45, 45, 0.98) 100%);
   }
 
   .html-content {
@@ -2195,17 +2202,20 @@ mat-card-actions {
 
   // Subtitles container - Below content area
   .subtitle-container {
-    width: 100%;
+    width: 100% !important;
     padding: 0;
     margin: 20px auto 0 auto !important;
     pointer-events: none;
     animation: fadeInSubtitle 0.3s ease-in;
     visibility: visible !important;
     opacity: 1 !important;
-    display: block !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
     overflow: hidden !important;
-    max-width: 100%;
-    background: black;
+    max-width: 100% !important;
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(45, 45, 45, 0.98) 100%);
+    box-sizing: border-box !important;
     
     // When positioned below content (not fixed)
     &.subtitle-below-content {
@@ -2219,7 +2229,7 @@ mat-card-actions {
       max-width: 100% !important;
       width: 100% !important;
       min-width: auto !important;
-    background: black;
+      background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(45, 45, 45, 0.98) 100%);
 
     }
     
@@ -2243,16 +2253,22 @@ mat-card-actions {
       font-size: 18px !important; // Fonte maior
       font-weight: 600 !important; // Mais negrito
       line-height: 1.5;
-      text-align: center;
+      text-align: center !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(156, 39, 176, 0.3) !important; // Sombra com toque roxo do tema
       text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.6) !important; // Sombra de texto mais forte
       word-wrap: break-word;
       max-width: 100%;
+      width: 100% !important;
       max-height: 80px !important; // Limit text height to keep compact
       overflow: hidden !important;
       visibility: visible !important;
       opacity: 1 !important;
       border: 1px solid rgba(156, 39, 176, 0.4) !important; // Borda roxa para combinar com o tema
+      margin: 0 auto !important; // Centralizar o container
+      box-sizing: border-box !important;
 
       &.paragraph-text {
         display: flex !important;
@@ -2263,18 +2279,29 @@ mat-card-actions {
         max-height: 200px !important;
         overflow: hidden !important; // No scrolling needed
         padding: 12px 20px !important;
+        width: 100% !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+        
+        // Ensure all direct text content is centered
+        > * {
+          text-align: center !important;
+          margin-left: auto !important;
+          margin-right: auto !important;
+        }
 
-        .subtitle-paragraph {
-          display: block;
+          .subtitle-paragraph {
+          display: block !important;
           transition: all 0.3s ease;
           padding: 10px 16px;
           border-radius: 6px;
-          text-align: center;
+          text-align: center !important;
           line-height: 1.6;
           max-width: 100%;
           word-wrap: break-word;
-          margin: 0 auto;
-          width: 100%;
+          margin: 0 auto !important;
+          width: 100% !important;
+          box-sizing: border-box !important;
 
           // Default style (when audio hasn't started)
           &:not(.current-paragraph) {
@@ -2309,13 +2336,15 @@ mat-card-actions {
             align-items: center !important;
             gap: 4px !important;
             padding: 10px 16px !important;
+            text-align: center !important;
 
             .paragraph-word {
-              display: inline-block;
+              display: inline-block !important;
               transition: all 0.2s ease;
               padding: 2px 4px;
               border-radius: 3px;
               white-space: nowrap;
+              text-align: center !important;
 
               // Words that have already been spoken
               &.past-word {
@@ -2355,13 +2384,16 @@ mat-card-actions {
         max-height: 80px !important;
         overflow-y: auto !important;
         overflow-x: hidden !important;
+        width: 100% !important;
+        text-align: center !important;
 
         .subtitle-word {
-          display: inline-block;
+          display: inline-block !important;
           transition: all 0.2s ease;
           padding: 2px 4px;
           border-radius: 3px;
           white-space: nowrap; // Keep words on same line when possible
+          text-align: center !important;
 
           // Words that have already been spoken
           &.past-word {
@@ -2447,7 +2479,10 @@ mat-card-actions {
       }
       
       &.subtitle-below-content {
-        padding: 0 15px 15px 15px !important;
+        padding: 15px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
       }
 
       .subtitle-text {
@@ -2466,7 +2501,10 @@ mat-card-actions {
       }
       
       &.subtitle-below-content {
-        padding: 0 12px 12px 12px !important;
+        padding: 12px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
       }
 
       .subtitle-text {

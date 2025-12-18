@@ -195,9 +195,6 @@
                 <div class="screenshot-content-container">
                   <img [src]="screenshotUrl()" [alt]="'Screenshot ' + screenshotId()" class="screenshot-full-image" />
                 </div>
-                <div class="screenshot-page-footer">
-                  <span class="page-number">{{ pageNumber() }}</span>
-                </div>
                 <!-- Subtitles area below screenshot -->
                 @if (showSubtitles() && (lrcParagraphs().length > 0 || lrcData().length > 0 || subtitleWords().length > 0)) {
                   <div class="subtitle-container subtitle-below-content">
@@ -355,9 +352,6 @@
               </div>
               <div class="html-content-container">
                 <div class="html-content" [innerHTML]="htmlContent()"></div>
-              </div>
-              <div class="html-page-footer">
-                <span class="page-number">{{ pageNumber() }}</span>
               </div>
               <!-- Subtitles area below HTML -->
               @if (showSubtitles() && (lrcParagraphs().length > 0 || lrcData().length > 0 || subtitleWords().length > 0)) {
