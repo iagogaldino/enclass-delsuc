@@ -1,7 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 
-/* Angular Material Theme - Dark Mode */
+/* Angular Material Theme - Dark Mode (must be before @import) */
 @use '@angular/material' as mat;
+
+/* Import Theme System */
+@use './styles/theme-variables' as *;
+@use './styles/themes' as *;
 
 @include mat.core();
 
@@ -29,6 +33,6 @@ $my-theme: mat.m2-define-dark-theme((
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: #121212;
-  color: rgba(255, 255, 255, 0.87);
+  background-color: $bg-dark;
+  color: $text-secondary;
 }

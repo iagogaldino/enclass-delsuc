@@ -1,8 +1,46 @@
+// Import theme variables
+@use '../../../styles/theme-variables' as *;
+
 :host {
   display: block;
   height: 100vh;
   max-height: 100vh;
   overflow: hidden;
+  
+  // Estilos globais de scrollbar para o componente
+  * {
+    // Webkit scrollbar (Chrome, Safari, Edge)
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: $scrollbar-track;
+      border-radius: 5px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $scrollbar-thumb;
+      border-radius: 5px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: $scrollbar-thumb-hover;
+        border: 1px solid transparent;
+      }
+      
+      &:active {
+        background: rgba(156, 39, 176, 0.7);
+      }
+    }
+    
+    // Firefox scrollbar
+    scrollbar-width: thin;
+    scrollbar-color: $scrollbar-thumb $scrollbar-track;
+  }
   
   // Prevenir scroll no body quando este componente está ativo
   ::ng-deep {
@@ -24,7 +62,7 @@
   height: 100vh;
   max-height: 100vh;
   padding: 0;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: $gradient-dark;
   position: relative;
   display: flex;
   align-items: center;
@@ -187,18 +225,18 @@ mat-chip-set {
     }
 
     .mat-drawer {
-      background: rgba(30, 30, 30, 0.98);
+      background: $navbar-bg;
     }
   }
 }
 
-// Sidebar com botões - Design Profissional
+// Sidebar com botões - Design Moderno e Minimalista
 .buttons-sidenav {
   width: 280px;
-  background: linear-gradient(180deg, rgba(26, 26, 26, 0.98) 0%, rgba(30, 30, 30, 0.98) 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
+  background: $navbar-bg;
+  border-right: 1px solid $navbar-border;
+  box-shadow: 2px 0 8px $shadow-sm;
+  border-radius: 0 16px 16px 0;
 
     .sidenav-content {
       display: flex;
@@ -206,81 +244,148 @@ mat-chip-set {
       height: 100%;
       padding: 0;
 
-      // Header profissional do sidemenu
+      // Header com Logo
       .sidenav-header {
         padding: 24px 20px;
-        background: linear-gradient(135deg, rgba(156, 39, 176, 0.15) 0%, rgba(63, 81, 181, 0.15) 100%);
-        border-bottom: 1px solid rgba(156, 39, 176, 0.2);
-        margin-bottom: 16px;
+        background: $navbar-bg;
+        border-bottom: 1px solid $navbar-border;
+        margin-bottom: 0;
 
-        h3 {
-          color: rgba(255, 255, 255, 0.95);
-          font-size: 16px;
-          font-weight: 600;
-          letter-spacing: 0.5px;
-          text-transform: uppercase;
-          margin: 0;
-          text-align: center;
+        .logo-container {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: $gradient-primary;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px $shadow-primary;
+
+            mat-icon {
+              color: $text-light;
+              font-size: 20px;
+              width: 20px;
+              height: 20px;
+            }
+          }
+
+          h3 {
+            color: $text-primary;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin: 0;
+            text-align: left;
+          }
         }
       }
 
       mat-nav-list {
-      padding: 0 12px 12px 12px;
+      padding: 16px 12px;
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
+      background: $navbar-bg;
       
-      // Scrollbar profissional
+      // Garantir que os itens da lista fiquem em linha
+      ::ng-deep {
+        .mat-list-item {
+          display: flex !important;
+          flex-direction: row !important;
+          align-items: center !important;
+          height: auto !important;
+        }
+        
+        .mat-list-item-content {
+          display: flex !important;
+          flex-direction: row !important;
+          align-items: center !important;
+          flex-wrap: nowrap !important;
+        }
+        
+        // Forçar que matListItemIcon e matListItemTitle fiquem na mesma linha
+        [matListItemIcon] {
+          display: inline-flex !important;
+          align-items: center !important;
+          margin-right: 12px !important;
+        }
+        
+        [matListItemTitle] {
+          display: inline-block !important;
+        }
+      }
+      
+      // Scrollbar moderno e elegante para navbar
       &::-webkit-scrollbar {
         width: 6px;
       }
       
       &::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.05);
+        background: transparent;
         border-radius: 3px;
+        margin: 8px 0;
       }
       
       &::-webkit-scrollbar-thumb {
-        background: rgba(156, 39, 176, 0.5);
+        background: $scrollbar-thumb;
         border-radius: 3px;
+        border: 1px solid transparent;
+        background-clip: padding-box;
+        transition: all 0.3s ease;
+        min-height: 30px;
         
         &:hover {
-          background: rgba(156, 39, 176, 0.7);
+          background: $scrollbar-thumb-hover;
+          border: 0px solid transparent;
+        }
+        
+        &:active {
+          background: rgba(156, 39, 176, 0.8);
         }
       }
+      
+      // Firefox scrollbar
+      scrollbar-width: thin;
+      scrollbar-color: $scrollbar-thumb transparent;
 
       .navigation-buttons {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
-        padding: 20px 16px;
-        background: rgba(255, 255, 255, 0.03);
-        border-radius: 8px;
+        padding: 16px;
+        background: $bg-secondary;
+        border-radius: 12px;
         margin-bottom: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid $border-light;
 
         .nav-page-button {
-          color: rgba(255, 255, 255, 0.7);
+          color: $text-tertiary;
           transition: all 0.3s ease;
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 6px;
+          background: transparent;
+          border-radius: 8px;
 
           &:hover:not([disabled]) {
-            color: rgba(255, 255, 255, 0.95);
-            background: rgba(255, 255, 255, 0.1);
+            color: $primary-color;
+            background: $overlay-primary-light;
             transform: scale(1.05);
           }
 
           &[disabled] {
             opacity: 0.3;
             cursor: not-allowed;
-            background: rgba(255, 255, 255, 0.02);
+            background: transparent;
           }
         }
 
         .page-indicator {
-          color: rgba(255, 255, 255, 0.95);
+          color: $text-primary;
           font-size: 13px;
           font-weight: 600;
           min-width: 70px;
@@ -288,40 +393,72 @@ mat-chip-set {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: rgba(156, 39, 176, 0.2);
+          background: $overlay-primary-light;
           padding: 6px 12px;
-          border-radius: 6px;
-          border: 1px solid rgba(156, 39, 176, 0.3);
+          border-radius: 8px;
+          border: 1px solid $border-primary;
         }
       }
 
       .nav-button {
         cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        color: rgba(255, 255, 255, 0.87);
+        transition: all 0.2s ease;
+        color: $navbar-text;
         text-decoration: none;
         display: block;
-        margin-bottom: 8px;
-        border-radius: 8px;
+        margin-bottom: 4px;
+        border-radius: 12px;
         overflow: hidden;
         position: relative;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        background: transparent;
+        box-shadow: none;
 
         &::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 4px;
-          height: 100%;
-          background: transparent;
-          transition: all 0.3s ease;
+          display: none;
+        }
+
+        // Garantir que o conteúdo fique em linha
+        ::ng-deep {
+          .mat-list-item {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            flex-wrap: nowrap !important;
+          }
+          
+          .mat-list-item-content {
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+          }
         }
 
         &:hover:not(.disabled) {
-          background-color: rgba(255, 255, 255, 0.1);
-          transform: translateX(4px);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+          background-color: rgba(255, 255, 255, 0.08);
+          transform: none;
+          box-shadow: none;
+
+          ::ng-deep {
+            mat-icon {
+              color: $primary-color;
+            }
+            span[matListItemTitle] {
+              color: $text-secondary;
+            }
+          }
+        }
+
+        &.active {
+          background-color: rgba(255, 255, 255, 0.12);
+
+          ::ng-deep {
+            mat-icon {
+              color: $primary-color;
+            }
+            span[matListItemTitle] {
+              color: $text-secondary;
+              font-weight: 600;
+            }
+          }
         }
 
         &.disabled {
@@ -332,113 +469,116 @@ mat-chip-set {
         }
 
         &.play-audio-button {
-          background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(56, 142, 60, 0.15) 100%);
-          border: 1px solid rgba(76, 175, 80, 0.3);
-
-          &::before {
-            background: linear-gradient(180deg, #4caf50 0%, #388e3c 100%);
-          }
-
           &:hover:not(.disabled) {
-            background: linear-gradient(135deg, rgba(76, 175, 80, 0.25) 0%, rgba(56, 142, 60, 0.25) 100%);
-            border-color: rgba(76, 175, 80, 0.5);
+            background-color: rgba(255, 255, 255, 0.08) !important;
           }
         }
 
         &.stop-audio-button {
-          background: linear-gradient(135deg, rgba(244, 67, 54, 0.15) 0%, rgba(211, 47, 47, 0.15) 100%);
-          border: 1px solid rgba(244, 67, 54, 0.3);
-
-          &::before {
-            background: linear-gradient(180deg, #f44336 0%, #d32f2f 100%);
-          }
-
           &:hover:not(.disabled) {
-            background: linear-gradient(135deg, rgba(244, 67, 54, 0.25) 0%, rgba(211, 47, 47, 0.25) 100%);
-            border-color: rgba(244, 67, 54, 0.5);
+            background-color: rgba(255, 255, 255, 0.08) !important;
           }
         }
 
         &.view-exercises-button {
-          background: linear-gradient(135deg, rgba(156, 39, 176, 0.15) 0%, rgba(123, 31, 162, 0.15) 100%);
-          border: 1px solid rgba(156, 39, 176, 0.3);
-
-          &::before {
-            background: linear-gradient(180deg, #9c27b0 0%, #7b1fa2 100%);
-          }
-
           &:hover:not(.disabled) {
-            background: linear-gradient(135deg, rgba(156, 39, 176, 0.25) 0%, rgba(123, 31, 162, 0.25) 100%);
-            border-color: rgba(156, 39, 176, 0.5);
+            background-color: rgba(255, 255, 255, 0.08) !important;
           }
         }
 
         &.generate-html-button {
-          background: linear-gradient(135deg, rgba(255, 152, 0, 0.15) 0%, rgba(245, 124, 0, 0.15) 100%);
-          border: 1px solid rgba(255, 152, 0, 0.3);
-
-          &::before {
-            background: linear-gradient(180deg, #ff9800 0%, #f57c00 100%);
-          }
-
           &:hover:not(.disabled) {
-            background: linear-gradient(135deg, rgba(255, 152, 0, 0.25) 0%, rgba(245, 124, 0, 0.25) 100%);
-            border-color: rgba(255, 152, 0, 0.5);
+            background-color: rgba(255, 255, 255, 0.08) !important;
           }
         }
 
         &.settings-nav-button {
-          background: linear-gradient(135deg, rgba(63, 81, 181, 0.15) 0%, rgba(48, 63, 159, 0.15) 100%);
-          border: 1px solid rgba(63, 81, 181, 0.3);
-
-          &::before {
-            background: linear-gradient(180deg, #3f51b5 0%, #303f9f 100%);
-          }
-
           &:hover:not(.disabled) {
-            background: linear-gradient(135deg, rgba(63, 81, 181, 0.25) 0%, rgba(48, 63, 159, 0.25) 100%);
-            border-color: rgba(63, 81, 181, 0.5);
+            background-color: rgba(255, 255, 255, 0.08) !important;
           }
         }
 
         &.toggle-view-button {
-          background: linear-gradient(135deg, rgba(255, 152, 0, 0.15) 0%, rgba(245, 124, 0, 0.15) 100%);
-          border: 1px solid rgba(255, 152, 0, 0.3);
-
-          &::before {
-            background: linear-gradient(180deg, #ff9800 0%, #f57c00 100%);
-          }
-
           &:hover:not(.disabled) {
-            background: linear-gradient(135deg, rgba(255, 152, 0, 0.25) 0%, rgba(245, 124, 0, 0.25) 100%);
-            border-color: rgba(255, 152, 0, 0.5);
+            background-color: rgba(255, 255, 255, 0.08) !important;
           }
         }
 
         ::ng-deep {
+          .mat-list-item {
+            &:hover {
+              background-color: rgba(255, 255, 255, 0.08) !important;
+            }
+          }
+          
           .mat-list-item-content {
-            padding: 16px 20px !important;
+            padding: 12px 16px !important;
             display: flex !important;
+            flex-direction: row !important;
             align-items: center !important;
-            justify-content: center !important;
-            min-height: 52px;
+            justify-content: flex-start !important;
+            gap: 12px !important;
+            min-height: 48px;
             position: relative;
             z-index: 1;
+            flex-wrap: nowrap !important;
+            width: 100% !important;
+            
+            &:hover {
+              background-color: rgba(255, 255, 255, 0.08) !important;
+            }
+          }
+
+          // Forçar ícones e texto na mesma linha
+          mat-icon[matListItemIcon],
+          mat-icon {
+            color: $navbar-icon;
+            font-size: 20px;
+            width: 20px !important;
+            height: 20px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            line-height: 1 !important;
+            vertical-align: middle !important;
+            order: 1 !important;
+            float: none !important;
+          }
+          
+          // Estilo específico para matListItemIcon
+          [matListItemIcon] {
+            margin-right: 12px !important;
+            margin-left: 0 !important;
           }
 
           span[matListItemTitle] {
             font-size: 14px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.95);
-            text-align: center;
-            width: 100%;
+            font-weight: 500;
+            color: $navbar-text;
+            text-align: left;
             line-height: 1.4;
-            letter-spacing: 0.3px;
+            letter-spacing: 0;
+            display: inline-block !important;
+            white-space: nowrap;
+            flex: 1;
+            margin: 0 !important;
+            padding: 0 !important;
+            vertical-align: middle !important;
+            order: 2 !important;
+            float: none !important;
           }
           
           // Estilo para o spinner quando estiver gerando
           .button-spinner {
-            margin: 0 auto;
+            margin: 0;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            order: 1 !important;
           }
         }
 
@@ -464,15 +604,17 @@ mat-chip-set {
   top: 20px;
   left: 20px;
   z-index: 100;
-  background: rgba(30, 30, 30, 0.95);
-  color: rgba(255, 255, 255, 0.87);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: $navbar-bg;
+  color: $navbar-text;
+  box-shadow: 0 2px 8px $shadow-md;
+  border: 1px solid $navbar-border;
   transition: all 0.2s;
+  border-radius: 8px;
 
   &:hover {
-    background: rgba(30, 30, 30, 1);
+    background: $navbar-hover;
     transform: scale(1.05);
+    color: $primary-color;
   }
 }
 
@@ -761,6 +903,37 @@ mat-chip-set {
   overflow-x: hidden;
   max-height: 100vh;
   padding-top: 20px; // Padding no topo para evitar corte
+  
+  // Scrollbar moderno
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: $scrollbar-track;
+    border-radius: 5px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: $scrollbar-thumb;
+    border-radius: 5px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: $scrollbar-thumb-hover;
+      border: 1px solid transparent;
+    }
+    
+    &:active {
+      background: rgba(156, 39, 176, 0.7);
+    }
+  }
+  
+  // Firefox scrollbar
+  scrollbar-width: thin;
+  scrollbar-color: $scrollbar-thumb $scrollbar-track;
 
   // Quando está mostrando HTML ou Screenshot, remove padding e centralização
   &.html-container {
@@ -779,7 +952,7 @@ mat-chip-set {
 .page-wrapper {
   width: 100%;
   max-width: 850px;
-  background: white;
+  background: $bg-secondary;
   border: 3px solid #9c27b0; // Borda roxa
   border-radius: 2px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
@@ -794,7 +967,7 @@ mat-chip-set {
 .page-content {
   width: 100%;
   height: 100%;
-  background: white;
+  background: $bg-secondary;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -844,7 +1017,7 @@ mat-chip-set {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  background: $bg-dark;
   position: relative;
   overflow: hidden;
   z-index: 1;
@@ -855,13 +1028,45 @@ mat-chip-set {
     overflow-y: auto;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    background: #ffffff;
+    background: $bg-primary;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: flex-start;
     padding: 20px;
     min-height: 0; // Allow flex shrinking
+    
+    // Scrollbar moderno
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: $scrollbar-track;
+      border-radius: 5px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $scrollbar-thumb;
+      border-radius: 5px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: $scrollbar-thumb-hover;
+        border: 1px solid transparent;
+      }
+      
+      &:active {
+        background: rgba(156, 39, 176, 0.7);
+      }
+    }
+    
+    // Firefox scrollbar
+    scrollbar-width: thin;
+    scrollbar-color: $scrollbar-thumb $scrollbar-track;
   }
   
   // Subtitles area below screenshot
@@ -869,7 +1074,7 @@ mat-chip-set {
     flex-shrink: 0; // Don't shrink subtitles
     padding: 20px !important;
     margin-top: 0;
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(45, 45, 45, 0.98) 100%);
+    background: $subtitle-bg;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
@@ -882,7 +1087,7 @@ mat-chip-set {
     object-fit: contain;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
-    background: #ffffff;
+    background: $bg-secondary;
   }
 
   .screenshot-page-footer {
@@ -918,12 +1123,12 @@ mat-chip-set {
       height: 100%;
       display: flex;
       flex-direction: column;
-      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%) !important;
+      background: $bg-dark !important;
     }
 
     .html-content-header {
       padding: 20px 24px;
-      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+      background: $bg-secondary !important;
       border-bottom: 3px solid #9c27b0;
       flex-shrink: 0;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -949,14 +1154,14 @@ mat-chip-set {
       overflow-y: auto;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
-      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%) !important;
+      background: $bg-dark !important;
     }
 
     .html-content {
       padding: 40px;
       min-height: calc(100% - 50px);
-      background: #ffffff !important;
-      color: #2d2d2d !important;
+      background: $bg-secondary !important;
+      color: $text-primary !important;
       flex: 1;
       padding-bottom: 50px;
       line-height: 1.8;
@@ -973,14 +1178,14 @@ mat-chip-set {
         }
 
         html, body {
-          background: #ffffff !important;
-          color: #2d2d2d !important;
+          background: $bg-secondary !important;
+          color: $text-primary !important;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
         }
 
         body {
-          background-color: #ffffff !important;
-          color: #2d2d2d !important;
+          background-color: $bg-secondary !important;
+          color: $text-primary !important;
         }
 
         // Tipografia - Design Moderno
@@ -1040,7 +1245,7 @@ mat-chip-set {
           overflow-x: auto;
           display: block;
           max-width: 100%;
-          background: #ffffff !important;
+          background: $bg-tertiary !important;
           border-radius: 8px;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
           overflow: hidden;
@@ -1070,15 +1275,15 @@ mat-chip-set {
           }
 
           tbody tr:nth-child(even) {
-            background: #f8f9fa !important;
+            background: $bg-tertiary !important;
           }
 
           tbody tr:nth-child(odd) {
-            background: #ffffff !important;
+            background: $bg-secondary !important;
           }
 
           tbody tr:hover {
-            background: #f0f0f0 !important;
+            background: $bg-hover !important;
           }
         }
 
@@ -1108,17 +1313,17 @@ mat-chip-set {
 
         // Código - Design Moderno
         code {
-          background: #f5f5f5 !important;
+          background: $bg-tertiary !important;
           padding: 3px 8px;
           border-radius: 4px;
           font-family: 'Courier New', 'Monaco', monospace;
           font-size: 0.9em;
-          color: #d63384 !important;
-          border: 1px solid #e0e0e0;
+          color: $primary-color !important;
+          border: 1px solid $border-light;
         }
 
         pre {
-          background: #f8f9fa !important;
+          background: $bg-tertiary !important;
           padding: 20px;
           border-radius: 8px;
           overflow-x: auto;
@@ -1129,7 +1334,7 @@ mat-chip-set {
           code {
             background: transparent;
             padding: 0;
-            color: #2d2d2d !important;
+            color: $text-primary !important;
             border: none;
           }
         }
@@ -1139,9 +1344,9 @@ mat-chip-set {
           margin: 1.5em 0;
           padding: 1.5em 2em;
           border-left: 4px solid #9c27b0;
-          background: #f8f9fa !important;
+          background: $bg-tertiary !important;
           font-style: italic;
-          color: #555555 !important;
+          color: $text-secondary !important;
           border-radius: 0 8px 8px 0;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
@@ -1150,18 +1355,18 @@ mat-chip-set {
         form {
         margin: 2em 0;
         padding: 2em;
-        background: #f8f9fa !important;
+        background: $bg-tertiary !important;
         border-radius: 12px;
-        border: 1px solid #e0e0e0 !important;
+        border: 1px solid $border-light !important;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       }
 
         fieldset {
           margin: 1.5em 0;
           padding: 1.5em;
-          border: 2px solid #e0e0e0 !important;
+          border: 2px solid $border-light !important;
           border-radius: 8px;
-          background: #ffffff !important;
+          background: $bg-secondary !important;
 
           legend {
             padding: 0 12px;
@@ -1193,12 +1398,12 @@ mat-chip-set {
           max-width: 500px;
           padding: 12px 16px;
           margin: 0.5em 0;
-          border: 2px solid #e0e0e0 !important;
+          border: 2px solid $border-light !important;
           border-radius: 8px;
           font-size: 16px;
           font-family: inherit;
-          background: #ffffff !important;
-          color: #2d2d2d !important;
+          background: $input-bg !important;
+          color: $text-primary !important;
           transition: all 0.3s ease;
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
@@ -1210,18 +1415,18 @@ mat-chip-set {
           }
 
           &:hover:not(:disabled) {
-            border-color: #b0b0b0 !important;
+            border-color: $border-medium !important;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
           }
 
           &:disabled {
-            background: #f5f5f5 !important;
+            background: $bg-tertiary !important;
             cursor: not-allowed;
             opacity: 0.6;
           }
 
           &::placeholder {
-            color: #999999 !important;
+            color: $input-placeholder !important;
             font-style: normal;
           }
         }
@@ -1232,12 +1437,12 @@ mat-chip-set {
           min-height: 120px;
           padding: 12px 16px;
           margin: 0.5em 0;
-          border: 2px solid #e0e0e0 !important;
+          border: 2px solid $border-light !important;
           border-radius: 8px;
           font-size: 16px;
           font-family: inherit;
-          background: #ffffff !important;
-          color: #2d2d2d !important;
+          background: $input-bg !important;
+          color: $text-primary !important;
           resize: vertical;
           transition: all 0.3s ease;
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -1249,18 +1454,18 @@ mat-chip-set {
           }
 
           &:hover:not(:disabled) {
-            border-color: #b0b0b0 !important;
+            border-color: $border-medium !important;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
           }
 
           &:disabled {
-            background: #f5f5f5 !important;
+            background: $bg-tertiary !important;
             cursor: not-allowed;
             opacity: 0.6;
           }
 
           &::placeholder {
-            color: #999999 !important;
+            color: $input-placeholder !important;
             font-style: normal;
           }
         }
@@ -1270,12 +1475,12 @@ mat-chip-set {
           max-width: 500px;
           padding: 12px 16px;
           margin: 0.5em 0;
-          border: 2px solid #e0e0e0 !important;
+          border: 2px solid $border-light !important;
           border-radius: 8px;
           font-size: 16px;
           font-family: inherit;
-          background: #ffffff !important;
-          color: #2d2d2d !important;
+          background: $input-bg !important;
+          color: $text-primary !important;
           cursor: pointer;
           transition: all 0.3s ease;
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -1292,15 +1497,15 @@ mat-chip-set {
           }
 
           &:disabled {
-            background: #f5f5f5 !important;
+            background: $bg-tertiary !important;
             cursor: not-allowed;
             opacity: 0.6;
           }
 
           option {
             padding: 10px;
-            background: #ffffff !important;
-            color: #2d2d2d !important;
+            background: $input-bg !important;
+            color: $text-primary !important;
           }
         }
 
@@ -1723,7 +1928,6 @@ mat-card-actions {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%) !important;
   position: relative;
   overflow: hidden;
   z-index: 1;
@@ -1731,7 +1935,7 @@ mat-card-actions {
 
   .html-content-header {
     padding: 20px 24px;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+    background: $bg-secondary !important;
     border-bottom: 3px solid #9c27b0;
     flex-shrink: 0;
     z-index: 10;
@@ -1758,9 +1962,40 @@ mat-card-actions {
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-    background: white;
+    background: $bg-primary;
     position: relative;
     min-height: 0; // Allow flex shrinking
+    
+    // Scrollbar moderno
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: $scrollbar-track;
+      border-radius: 5px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $scrollbar-thumb;
+      border-radius: 5px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: $scrollbar-thumb-hover;
+        border: 1px solid transparent;
+      }
+      
+      &:active {
+        background: rgba(156, 39, 176, 0.7);
+      }
+    }
+    
+    // Firefox scrollbar
+    scrollbar-width: thin;
+    scrollbar-color: $scrollbar-thumb $scrollbar-track;
   }
   
   // Subtitles area below HTML
@@ -1771,14 +2006,14 @@ mat-card-actions {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(45, 45, 45, 0.98) 100%);
+    background: $subtitle-bg;
   }
 
   .html-content {
     padding: 30px;
     min-height: 100%;
-    background: white;
-    color: #000;
+    background: $bg-secondary;
+    color: $text-primary;
     line-height: 1.6;
     font-size: 16px;
     padding-bottom: 60px;
@@ -1850,7 +2085,7 @@ mat-card-actions {
         overflow-x: auto;
         display: block;
         max-width: 100%;
-        background: #ffffff !important;
+        background: $bg-tertiary !important;
         border-radius: 8px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         overflow: hidden;
@@ -1863,7 +2098,7 @@ mat-card-actions {
           padding: 14px 16px;
           border: none;
           text-align: left;
-          color: #2d2d2d !important;
+          color: $text-primary !important;
         }
 
         th {
@@ -1880,15 +2115,15 @@ mat-card-actions {
         }
 
         tbody tr:nth-child(even) {
-          background: #f8f9fa !important;
+          background: $bg-tertiary !important;
         }
 
         tbody tr:nth-child(odd) {
-          background: #ffffff !important;
+          background: $bg-secondary !important;
         }
 
         tbody tr:hover {
-          background: #f0f0f0 !important;
+          background: $bg-hover !important;
         }
       }
 
@@ -1961,12 +2196,12 @@ mat-card-actions {
         max-width: 500px;
         padding: 10px 12px;
         margin: 0.5em 0;
-        border: 2px solid #ddd;
+        border: 2px solid $border-light;
         border-radius: 4px;
         font-size: 16px;
         font-family: inherit;
-        background: white;
-        color: #333;
+        background: $input-bg;
+        color: $text-primary;
         transition: all 0.2s ease;
 
         &:focus {
@@ -1980,7 +2215,7 @@ mat-card-actions {
         }
 
         &:disabled {
-          background: #f5f5f5;
+          background: $bg-tertiary;
           cursor: not-allowed;
           opacity: 0.6;
         }
@@ -1997,12 +2232,12 @@ mat-card-actions {
         min-height: 100px;
         padding: 10px 12px;
         margin: 0.5em 0;
-        border: 2px solid #ddd;
+        border: 2px solid $border-light;
         border-radius: 4px;
         font-size: 16px;
         font-family: inherit;
-        background: white;
-        color: #333;
+        background: $input-bg;
+        color: $text-primary;
         resize: vertical;
         transition: all 0.2s ease;
 
@@ -2017,7 +2252,7 @@ mat-card-actions {
         }
 
         &:disabled {
-          background: #f5f5f5;
+          background: $bg-tertiary;
           cursor: not-allowed;
           opacity: 0.6;
         }
@@ -2033,12 +2268,12 @@ mat-card-actions {
         max-width: 500px;
         padding: 10px 12px;
         margin: 0.5em 0;
-        border: 2px solid #ddd;
+        border: 2px solid $border-light;
         border-radius: 4px;
         font-size: 16px;
         font-family: inherit;
-        background: white;
-        color: #333;
+        background: $input-bg;
+        color: $text-primary;
         cursor: pointer;
         transition: all 0.2s ease;
 
@@ -2053,7 +2288,7 @@ mat-card-actions {
         }
 
         &:disabled {
-          background: #f5f5f5;
+          background: $bg-tertiary;
           cursor: not-allowed;
           opacity: 0.6;
         }
@@ -2150,17 +2385,17 @@ mat-card-actions {
 
       // Código - Design Moderno
       code {
-        background: #f5f5f5 !important;
+        background: $bg-tertiary !important;
         padding: 3px 8px;
         border-radius: 4px;
         font-family: 'Courier New', 'Monaco', monospace;
         font-size: 0.9em;
-        color: #d63384 !important;
-        border: 1px solid #e0e0e0;
+        color: $primary-color !important;
+        border: 1px solid $border-light;
       }
 
       pre {
-        background: #f8f9fa !important;
+        background: $bg-tertiary !important;
         padding: 20px;
         border-radius: 8px;
         overflow-x: auto;
@@ -2171,7 +2406,7 @@ mat-card-actions {
         code {
           background: transparent;
           padding: 0;
-          color: #2d2d2d !important;
+          color: $text-primary !important;
           border: none;
         }
       }
@@ -2181,9 +2416,9 @@ mat-card-actions {
         border-left: 4px solid #9c27b0;
         padding: 1.5em 2em;
         margin: 1.5em 0;
-        color: #555555 !important;
+        color: $text-secondary !important;
         font-style: italic;
-        background: #f8f9fa !important;
+        background: $bg-tertiary !important;
         border-radius: 0 8px 8px 0;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       }
@@ -2214,7 +2449,7 @@ mat-card-actions {
     align-items: center !important;
     overflow: hidden !important;
     max-width: 100% !important;
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(45, 45, 45, 0.98) 100%);
+    background: $subtitle-bg;
     box-sizing: border-box !important;
     
     // When positioned below content (not fixed)
@@ -2229,7 +2464,7 @@ mat-card-actions {
       max-width: 100% !important;
       width: 100% !important;
       min-width: auto !important;
-      background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(45, 45, 45, 0.98) 100%);
+      background: $bg-secondary !important;
 
     }
     
@@ -2246,8 +2481,8 @@ mat-card-actions {
     }
 
     .subtitle-text {
-      background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(45, 45, 45, 0.98) 100%) !important; // Tema dark
-      color: #ffffff !important;
+      background: $subtitle-bg !important;
+      color: $subtitle-text !important;
       padding: 14px 24px !important; // Mais padding para melhor legibilidade
       border-radius: 8px;
       font-size: 18px !important; // Fonte maior
@@ -2257,8 +2492,8 @@ mat-card-actions {
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(156, 39, 176, 0.3) !important; // Sombra com toque roxo do tema
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.6) !important; // Sombra de texto mais forte
+      box-shadow: 0 6px 20px $shadow-lg, 0 0 0 2px $border-primary-medium !important;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.6) !important;
       word-wrap: break-word;
       max-width: 100%;
       width: 100% !important;
@@ -2266,7 +2501,7 @@ mat-card-actions {
       overflow: hidden !important;
       visibility: visible !important;
       opacity: 1 !important;
-      border: 1px solid rgba(156, 39, 176, 0.4) !important; // Borda roxa para combinar com o tema
+      border: 1px solid $subtitle-border !important;
       margin: 0 auto !important; // Centralizar o container
       box-sizing: border-box !important;
 
@@ -2305,27 +2540,27 @@ mat-card-actions {
 
           // Default style (when audio hasn't started)
           &:not(.current-paragraph) {
-            background: linear-gradient(135deg, rgba(30, 30, 30, 0.95) 0%, rgba(40, 40, 40, 0.95) 100%) !important; // Tema dark
-            color: rgba(255, 255, 255, 0.95) !important; // Mais brilhante
+            background: $gradient-dark-overlay !important;
+            color: $text-light !important;
             font-size: 17px !important; // Fonte maior
             font-weight: 500 !important;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important; // Sombra mais forte
-            border: 1px solid rgba(156, 39, 176, 0.3) !important; // Borda roxa sutil
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+            border: 1px solid $border-primary-medium !important;
           }
 
           // Current paragraph being spoken (highlight)
           &.current-paragraph {
-            background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%) !important;
-            color: #ffffff !important;
+            background: $gradient-primary !important;
+            color: $text-light !important;
             font-weight: 700 !important; // Mais negrito
             font-size: 19px !important; // Fonte maior
             transform: scale(1.02);
-            box-shadow: 0 6px 20px rgba(156, 39, 176, 0.9), 0 0 0 2px rgba(255, 255, 255, 0.2) !important; // Sombra mais forte
-            text-shadow: 0 2px 6px rgba(0, 0, 0, 1), 0 0 10px rgba(0, 0, 0, 0.8) !important; // Sombra de texto mais forte
+            box-shadow: 0 6px 20px $shadow-primary-strong, 0 0 0 2px rgba(255, 255, 255, 0.2) !important;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 1), 0 0 10px rgba(0, 0, 0, 0.8) !important;
             animation: pulseParagraph 1.2s ease-in-out infinite;
             z-index: 1;
             position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.3) !important; // Borda mais visível
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
           }
 
           // Paragraph with word-level highlighting
@@ -2348,7 +2583,7 @@ mat-card-actions {
 
               // Words that have already been spoken
               &.past-word {
-                color: #4caf50; // Green for completed words
+                color: $accent-success; // Green for completed words
                 opacity: 0.9;
               }
 
@@ -2386,6 +2621,29 @@ mat-card-actions {
         overflow-x: hidden !important;
         width: 100% !important;
         text-align: center !important;
+        
+        // Scrollbar para karaoke text
+        &::-webkit-scrollbar {
+          height: 4px;
+        }
+        
+        &::-webkit-scrollbar-track {
+          background: transparent;
+          border-radius: 2px;
+        }
+        
+        &::-webkit-scrollbar-thumb {
+          background: rgba(156, 39, 176, 0.5);
+          border-radius: 2px;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            background: rgba(156, 39, 176, 0.7);
+          }
+        }
+        
+        scrollbar-width: thin;
+        scrollbar-color: rgba(156, 39, 176, 0.5) transparent;
 
         .subtitle-word {
           display: inline-block !important;
@@ -2397,17 +2655,17 @@ mat-card-actions {
 
           // Words that have already been spoken
           &.past-word {
-            color: #4caf50; // Green for completed words
+            color: $accent-success; // Green for completed words
             opacity: 0.8;
           }
 
           // Current word being spoken (karaoke highlight)
           &.current-word {
-            background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
-            color: #ffffff;
+            background: $gradient-primary;
+            color: $text-light;
             font-weight: 700;
             transform: scale(1.1);
-            box-shadow: 0 2px 8px rgba(156, 39, 176, 0.6);
+            box-shadow: 0 2px 8px $shadow-primary;
             animation: pulseWord 0.6s ease-in-out infinite;
             z-index: 1;
             position: relative;

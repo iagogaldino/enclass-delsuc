@@ -53,10 +53,6 @@
           [fixedInViewport]="true"
           class="buttons-sidenav">
           <div class="sidenav-content">
-            <!-- Header Profissional -->
-            <div class="sidenav-header">
-              <h3>Navegação</h3>
-            </div>
             <mat-nav-list>
               <!-- Navigation Buttons -->
               <div class="navigation-buttons">
@@ -77,6 +73,7 @@
               
               @if (audioUrl() || screenshot()?.audioUrl) {
                 <a mat-list-item (click)="playAudio(); $event.preventDefault()" class="nav-button play-audio-button" href="#">
+                  <mat-icon matListItemIcon>play_circle</mat-icon>
                   <span matListItemTitle>Reproduzir Áudio</span>
                 </a>
               }
@@ -85,18 +82,22 @@
                  class="nav-button generate-html-button" href="#">
                 @if (generatingHTML()) {
                   <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
-                } @else if (htmlContent()) {
-                  <span matListItemTitle>{{ showHTMLView() ? 'Ver Screenshot' : 'Ver HTML' }}</span>
-                } @else {
-                  <span matListItemTitle>Gerar HTML</span>
+                }
+                @if (!generatingHTML()) {
+                  <mat-icon matListItemIcon>code</mat-icon>
+                }
+                @if (!generatingHTML()) {
+                  <span matListItemTitle>{{ htmlContent() ? (showHTMLView() ? 'Ver Screenshot' : 'Ver HTML') : 'Gerar HTML' }}</span>
                 }
               </a>
               @if (exercises().length > 0) {
                 <a mat-list-item (click)="toggleExercises(); $event.preventDefault()" class="nav-button view-exercises-button" href="#">
+                  <mat-icon matListItemIcon>quiz</mat-icon>
                   <span matListItemTitle>{{ showExercises() ? 'Ocultar Exercícios' : 'Ver Exercícios' }}</span>
                 </a>
               }
               <a mat-list-item (click)="openSettingsModal(); $event.preventDefault()" class="nav-button settings-nav-button" href="#">
+                <mat-icon matListItemIcon>settings</mat-icon>
                 <span matListItemTitle>Configurações</span>
               </a>
             </mat-nav-list>
@@ -271,10 +272,6 @@
           [fixedInViewport]="true"
           class="buttons-sidenav">
           <div class="sidenav-content">
-            <!-- Header Profissional -->
-            <div class="sidenav-header">
-              <h3>Navegação</h3>
-            </div>
             <mat-nav-list>
               <!-- Navigation Buttons -->
               <div class="navigation-buttons">
@@ -295,20 +292,24 @@
               
               @if (audioUrl() || screenshot()?.audioUrl) {
                 <a mat-list-item (click)="playAudio(); $event.preventDefault()" class="nav-button play-audio-button" href="#">
+                  <mat-icon matListItemIcon>play_circle</mat-icon>
                   <span matListItemTitle>Reproduzir Áudio</span>
                 </a>
               }
               @if (screenshot() && htmlContent()) {
                 <a mat-list-item (click)="toggleViewMode(); $event.preventDefault()" class="nav-button toggle-view-button" href="#">
+                  <mat-icon matListItemIcon>swap_horiz</mat-icon>
                   <span matListItemTitle>{{ showHTMLView() ? 'Ver Screenshot' : 'Ver HTML' }}</span>
                 </a>
               }
               @if (exercises().length > 0) {
                 <a mat-list-item (click)="toggleExercises(); $event.preventDefault()" class="nav-button view-exercises-button" href="#">
+                  <mat-icon matListItemIcon>quiz</mat-icon>
                   <span matListItemTitle>{{ showExercises() ? 'Ocultar Exercícios' : 'Ver Exercícios' }}</span>
                 </a>
               }
               <a mat-list-item (click)="openSettingsModal(); $event.preventDefault()" class="nav-button settings-nav-button" href="#">
+                <mat-icon matListItemIcon>settings</mat-icon>
                 <span matListItemTitle>Configurações</span>
               </a>
             </mat-nav-list>

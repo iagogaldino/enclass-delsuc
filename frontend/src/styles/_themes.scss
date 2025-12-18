@@ -1,0 +1,132 @@
+// ============================================
+// Theme System
+// ============================================
+// Sistema de temas centralizado
+// Para criar um novo tema, importe este arquivo e sobrescreva as variáveis
+
+@use 'theme-variables' as *;
+
+// ============================================
+// Tema Padrão (Roxo)
+// ============================================
+:root {
+  // Primary Colors
+  --primary-color: #{$primary-color};
+  --primary-color-dark: #{$primary-color-dark};
+  --primary-color-light: #{$primary-color-light};
+  
+  // Background Colors
+  --bg-primary: #{$bg-primary};
+  --bg-secondary: #{$bg-secondary};
+  --bg-tertiary: #{$bg-tertiary};
+  --bg-dark: #{$bg-dark};
+  --bg-dark-secondary: #{$bg-dark-secondary};
+  --bg-dark-tertiary: #{$bg-dark-tertiary};
+  --bg-hover: #{$bg-hover};
+  
+  // Text Colors
+  --text-primary: #{$text-primary};
+  --text-secondary: #{$text-secondary};
+  --text-tertiary: #{$text-tertiary};
+  --text-light: #{$text-light};
+  --text-muted: #{$text-muted};
+  --text-disabled: #{$text-disabled};
+  
+  // Border Colors
+  --border-light: #{$border-light};
+  --border-medium: #{$border-medium};
+  --border-primary: #{$border-primary};
+  --border-primary-medium: #{$border-primary-medium};
+  --border-primary-strong: #{$border-primary-strong};
+  
+  // Accent Colors
+  --accent-success: #{$accent-success};
+  --accent-error: #{$accent-error};
+  --accent-warning: #{$accent-warning};
+  --accent-info: #{$accent-info};
+  
+  // Shadow Colors
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --shadow-primary: #{$shadow-primary};
+  
+  // Overlay Colors
+  --overlay-primary-light: #{$overlay-primary-light};
+  --overlay-primary-medium: #{$overlay-primary-medium};
+  --overlay-primary-strong: #{$overlay-primary-strong};
+  --overlay-dark: #{$overlay-dark};
+  
+  // Navbar Colors
+  --navbar-bg: #{$navbar-bg};
+  --navbar-text: #{$navbar-text};
+  --navbar-icon: #{$navbar-icon};
+  --navbar-hover: #{$navbar-hover};
+  --navbar-active: #{$navbar-active};
+  --navbar-border: #{$navbar-border};
+  
+  // Subtitle Colors
+  --subtitle-bg: #{$subtitle-bg};
+  --subtitle-text: #{$subtitle-text};
+  --subtitle-border: #{$subtitle-border};
+  
+  // Button Colors
+  --button-primary-bg: #{$button-primary-bg};
+  --button-primary-text: #{$button-primary-text};
+  --button-secondary-bg: #{$button-secondary-bg};
+  --button-secondary-text: #{$button-secondary-text};
+}
+
+// ============================================
+// Mixins para facilitar o uso
+// ============================================
+
+@mixin theme-primary-gradient {
+  background: $gradient-primary;
+}
+
+@mixin theme-dark-gradient {
+  background: $gradient-dark;
+}
+
+@mixin theme-light-gradient {
+  background: $gradient-light;
+}
+
+@mixin theme-shadow($size: md) {
+  @if $size == sm {
+    box-shadow: 0 2px 4px $shadow-sm;
+  } @else if $size == md {
+    box-shadow: 0 4px 8px $shadow-md;
+  } @else if $size == lg {
+    box-shadow: 0 8px 16px $shadow-lg;
+  } @else if $size == primary {
+    box-shadow: 0 4px 12px $shadow-primary;
+  }
+}
+
+@mixin theme-border($color: light) {
+  @if $color == light {
+    border: 1px solid $border-light;
+  } @else if $color == primary {
+    border: 1px solid $border-primary;
+  } @else if $color == primary-medium {
+    border: 1px solid $border-primary-medium;
+  } @else if $color == primary-strong {
+    border: 1px solid $border-primary-strong;
+  }
+}
+
+@mixin theme-text($variant: primary) {
+  @if $variant == primary {
+    color: $text-primary;
+  } @else if $variant == secondary {
+    color: $text-secondary;
+  } @else if $variant == tertiary {
+    color: $text-tertiary;
+  } @else if $variant == light {
+    color: $text-light;
+  } @else if $variant == muted {
+    color: $text-muted;
+  }
+}

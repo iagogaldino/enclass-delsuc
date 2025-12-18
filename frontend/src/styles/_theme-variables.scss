@@ -1,0 +1,132 @@
+// ============================================
+// Theme Variables - Centralized Color System
+// ============================================
+// Este arquivo contém todas as variáveis de cores do projeto
+// Para mudar o tema, altere as variáveis abaixo ou crie novos temas
+
+// ============================================
+// Primary Colors (Roxo - Tema Atual)
+// ============================================
+$primary-color: #9c27b0;
+$primary-color-dark: #7b1fa2;
+$primary-color-light: #ba68c8;
+$primary-rgb: 156, 39, 176;
+
+// ============================================
+// Background Colors (Dark Theme)
+// ============================================
+$bg-primary: #1a1a1a;
+$bg-secondary: #2d2d2d;
+$bg-tertiary: #333333;
+$bg-dark: #121212;
+$bg-dark-secondary: #1a1a1a;
+$bg-dark-tertiary: #2d2d2d;
+$bg-hover: #3a3a3a;
+
+// ============================================
+// Text Colors (Dark Theme)
+// ============================================
+$text-primary: #ffffff;
+$text-secondary: rgba(255, 255, 255, 0.87);
+$text-tertiary: rgba(255, 255, 255, 0.6);
+$text-light: #ffffff;
+$text-muted: rgba(255, 255, 255, 0.87);
+$text-disabled: rgba(255, 255, 255, 0.4);
+
+// ============================================
+// Border Colors (Dark Theme)
+// ============================================
+$border-light: rgba(255, 255, 255, 0.08);
+$border-medium: rgba(255, 255, 255, 0.12);
+$border-primary: rgba(156, 39, 176, 0.3);
+$border-primary-medium: rgba(156, 39, 176, 0.4);
+$border-primary-strong: rgba(156, 39, 176, 0.5);
+
+// ============================================
+// Accent Colors
+// ============================================
+$accent-success: #4caf50;
+$accent-success-dark: #388e3c;
+$accent-error: #f44336;
+$accent-error-dark: #d32f2f;
+$accent-warning: #ff9800;
+$accent-warning-dark: #f57c00;
+$accent-info: #2196f3;
+$accent-info-dark: #1976d2;
+
+// ============================================
+// Gradient Colors
+// ============================================
+$gradient-primary: linear-gradient(135deg, $primary-color 0%, $primary-color-dark 100%);
+$gradient-dark: linear-gradient(135deg, $bg-dark 0%, $bg-dark-secondary 100%);
+$gradient-light: linear-gradient(135deg, $bg-secondary 0%, $bg-primary 100%);
+$gradient-dark-overlay: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(45, 45, 45, 0.98) 100%);
+
+// ============================================
+// Shadow Colors
+// ============================================
+$shadow-sm: rgba(0, 0, 0, 0.05);
+$shadow-md: rgba(0, 0, 0, 0.1);
+$shadow-lg: rgba(0, 0, 0, 0.2);
+$shadow-primary: rgba(156, 39, 176, 0.3);
+$shadow-primary-strong: rgba(156, 39, 176, 0.5);
+
+// ============================================
+// Overlay Colors
+// ============================================
+$overlay-primary-light: rgba(156, 39, 176, 0.1);
+$overlay-primary-medium: rgba(156, 39, 176, 0.15);
+$overlay-primary-strong: rgba(156, 39, 176, 0.25);
+$overlay-dark: rgba(0, 0, 0, 0.3);
+$overlay-dark-strong: rgba(0, 0, 0, 0.5);
+
+// ============================================
+// Navbar/Sidebar Colors (Dark Theme)
+// ============================================
+$navbar-bg: $bg-secondary;
+$navbar-text: $text-secondary;
+$navbar-icon: $text-tertiary;
+$navbar-hover: rgba(255, 255, 255, 0.08);
+$navbar-active: rgba(255, 255, 255, 0.12);
+$navbar-border: $border-light;
+
+// ============================================
+// Subtitle/Legend Colors
+// ============================================
+$subtitle-bg: $bg-secondary;
+$subtitle-text: $text-primary;
+$subtitle-border: $border-primary-medium;
+$subtitle-shadow: $shadow-lg;
+
+// ============================================
+// Button Colors
+// ============================================
+$button-primary-bg: $gradient-primary;
+$button-primary-text: $text-light;
+$button-primary-hover: linear-gradient(135deg, $primary-color-dark 0%, #6a1b9a 100%);
+$button-secondary-bg: $bg-tertiary;
+$button-secondary-text: $text-secondary;
+$button-secondary-hover: $bg-hover;
+
+// ============================================
+// Card Colors (Dark Theme)
+// ============================================
+$card-bg: $bg-secondary;
+$card-border: $border-light;
+$card-shadow: $shadow-lg;
+
+// ============================================
+// Input/Form Colors (Dark Theme)
+// ============================================
+$input-bg: $bg-tertiary;
+$input-border: rgba(255, 255, 255, 0.2);
+$input-border-focus: $primary-color;
+$input-text: $text-primary;
+$input-placeholder: rgba(255, 255, 255, 0.5);
+
+// ============================================
+// Scrollbar Colors (Dark Theme)
+// ============================================
+$scrollbar-track: $bg-dark-tertiary;
+$scrollbar-thumb: rgba(156, 39, 176, 0.4);
+$scrollbar-thumb-hover: rgba(156, 39, 176, 0.6);
