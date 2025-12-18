@@ -445,9 +445,11 @@ async function generateLRCFromWhisper(
     const audioStream = createReadStream(tempAudioPath);
     
     // Call Whisper API with word-level timestamps
+    // Audio is in English, so we transcribe in English to get accurate timestamps
     const transcription = await openai.audio.transcriptions.create({
       file: audioStream,
       model: 'whisper-1',
+      language: 'en', // Audio is in English
       response_format: 'verbose_json',
       timestamp_granularities: ['word']
     });
@@ -523,11 +525,89 @@ async function generateLRCFromWhisper(
 }
 
 /**
+ * Convert LRC data from English to Portuguese, keeping timestamps
+ * Uses the same timestamps from English LRC but with Portuguese text
+ */
+function convertLRCEnglishToPortuguese(englishLRC: string, portugueseText: string): string {
+  // Parse English LRC to get timestamps
+  const lrcLines = englishLRC.split('\n').filter(line => line.trim().length > 0);
+  const timestamps: number[] = [];
+  
+  for (const line of lrcLines) {
+    const match = line.match(/^\[(\d{2}):(\d{2})\.(\d{2})\](.*)$/);
+    if (match) {
+      const minutes = parseInt(match[1], 10);
+      const seconds = parseInt(match[2], 10);
+      const centiseconds = parseInt(match[3], 10);
+      const timestamp = minutes * 60 + seconds + centiseconds / 100;
+      timestamps.push(timestamp);
+    }
+  }
+  
+  // If no timestamps found, return fallback with Portuguese text
+  if (timestamps.length === 0) {
+    // Try to estimate duration from text length
+    const words = portugueseText.split(/\s+/);
+    const estimatedDuration = words.length / 2.5; // ~150 words per minute
+    const timePerWord = estimatedDuration / words.length;
+    
+    const lrcLines: string[] = [];
+    let currentTime = 0;
+    for (const word of words) {
+      const timestamp = secondsToLRCTimestamp(currentTime);
+      lrcLines.push(`${timestamp}${word}`);
+      currentTime += timePerWord;
+    }
+    return lrcLines.join('\n');
+  }
+  
+  // Split Portuguese text into words
+  const portugueseWords = portugueseText.split(/\s+/).filter(w => w.trim().length > 0);
+  
+  // Calculate total duration from last timestamp
+  const totalDuration = timestamps.length > 0 ? timestamps[timestamps.length - 1] : 60;
+  
+  // Distribute Portuguese words proportionally across timestamps
+  const portugueseLRC: string[] = [];
+  const wordsPerTimestamp = Math.ceil(portugueseWords.length / timestamps.length);
+  
+  for (let i = 0; i < timestamps.length; i++) {
+    const timestamp = timestamps[i];
+    const timestampStr = secondsToLRCTimestamp(timestamp);
+    
+    const startIdx = i * wordsPerTimestamp;
+    const endIdx = Math.min(startIdx + wordsPerTimestamp, portugueseWords.length);
+    
+    if (startIdx < portugueseWords.length) {
+      const ptWords = portugueseWords.slice(startIdx, endIdx).join(' ');
+      if (ptWords.length > 0) {
+        portugueseLRC.push(`${timestampStr}${ptWords}`);
+      }
+    }
+  }
+  
+  // If there are remaining words, add them to the last timestamp
+  const lastTimestampIdx = timestamps.length - 1;
+  if (lastTimestampIdx >= 0 && portugueseWords.length > timestamps.length * wordsPerTimestamp) {
+    const remainingStart = timestamps.length * wordsPerTimestamp;
+    const remainingWords = portugueseWords.slice(remainingStart).join(' ');
+    if (remainingWords.length > 0 && portugueseLRC.length > 0) {
+      const lastLine = portugueseLRC[portugueseLRC.length - 1];
+      const lastText = lastLine.substring(lastLine.indexOf(']') + 1);
+      portugueseLRC[portugueseLRC.length - 1] = `${secondsToLRCTimestamp(timestamps[lastTimestampIdx])}${lastText} ${remainingWords}`;
+    }
+  }
+  
+  return portugueseLRC.length > 0 ? portugueseLRC.join('\n') : englishLRC;
+}
+
+/**
  * Generate audio explanation from a screenshot image using OpenAI
  * First analyzes the image to generate explanatory text, then converts to audio
  * Uses Whisper API to generate precise LRC timestamps
+ * Audio is in English, but subtitles are in Portuguese
  * @param imagePath - Path to the image file
- * @returns Object containing the audio buffer, subtitle text, and LRC data
+ * @returns Object containing the audio buffer, subtitle text (Portuguese), and LRC data (Portuguese)
  */
 export async function generateAudioExplanation(
   imagePath: string
@@ -567,7 +647,7 @@ The explanation should:
 
 Write the explanation as if you were speaking, not as a formal text. Use conversational and didactic language.`;
 
-    // Generate explanatory text in English only
+    // Step 1: Generate explanatory text in English (for audio)
     const textResponseEN = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
@@ -600,7 +680,29 @@ Write the explanation as if you were speaking, not as a formal text. Use convers
       throw new Error('Não foi possível gerar a explicação em inglês');
     }
 
-    // Step 2: Convert English text to speech using TTS API
+    // Step 2: Translate English text to Portuguese (for subtitles)
+    const translationResponse = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a professional translator. Translate the following English text to Portuguese (Brazil), maintaining the same tone, style, and didactic approach. Keep it natural and conversational.'
+        },
+        {
+          role: 'user',
+          content: `Translate this educational explanation to Portuguese (Brazil), maintaining the same tone and style:\n\n${explanationTextEN}`
+        }
+      ],
+      max_tokens: 800
+    });
+
+    const explanationTextPT = translationResponse.choices[0]?.message?.content;
+    
+    if (!explanationTextPT) {
+      throw new Error('Não foi possível traduzir a explicação para português');
+    }
+
+    // Step 3: Convert English text to speech using TTS API (audio in English)
     const audioResponse = await openai.audio.speech.create({
       model: 'tts-1',
       voice: 'nova', // Female voice that sounds like a teacher
@@ -618,13 +720,16 @@ Write the explanation as if you were speaking, not as a formal text. Use convers
       const tempDir = path.join(__dirname, '../../temp');
       await ensureDir(tempDir);
       
-      // Generate LRC from Whisper API
-      lrcData = await generateLRCFromWhisper(audioBuffer, tempDir);
+      // Generate LRC from Whisper API (using English audio for timestamps)
+      const englishLRC = await generateLRCFromWhisper(audioBuffer, tempDir);
+      
+      // Convert LRC from English to Portuguese, keeping timestamps
+      lrcData = convertLRCEnglishToPortuguese(englishLRC, explanationTextPT);
     } catch (whisperError: any) {
       console.warn('Erro ao gerar LRC com Whisper, usando fallback:', whisperError.message);
-      // Fallback: create simple LRC with estimated timestamps
+      // Fallback: create simple LRC with estimated timestamps using Portuguese text
       // Estimate ~150 words per minute = 2.5 words per second
-      const words = explanationTextEN.split(/\s+/);
+      const words = explanationTextPT.split(/\s+/);
       const estimatedDuration = words.length / 2.5; // seconds
       const timePerWord = estimatedDuration / words.length;
       
@@ -640,8 +745,8 @@ Write the explanation as if you were speaking, not as a formal text. Use convers
 
     return {
       audioBuffer,
-      subtitleText: explanationTextEN,
-      lrcData
+      subtitleText: explanationTextPT, // Portuguese subtitle text
+      lrcData // LRC with timestamps (may be in English from Whisper, but subtitleText is PT)
     };
   } catch (error: any) {
     // Handle OpenAI API errors

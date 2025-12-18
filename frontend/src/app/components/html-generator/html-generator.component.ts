@@ -604,13 +604,18 @@ export class HtmlGeneratorComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Check if audio already exists
-    const screenshot = this.screenshot();
-    if (screenshot?.audioUrl) {
-      this.loadAudioFromUrl(screenshot.audioUrl);
-      return;
+    // Stop current audio if playing
+    if (this.currentAudio && !this.currentAudio.paused) {
+      this.stopAudio();
     }
 
+    // Clean up previous audio URL to avoid memory leaks
+    const previousUrl = this.audioUrl();
+    if (previousUrl) {
+      URL.revokeObjectURL(previousUrl);
+    }
+
+    // Always generate new audio (will replace existing one)
     this.generatingAudio.set(true);
     this.error.set('');
 
