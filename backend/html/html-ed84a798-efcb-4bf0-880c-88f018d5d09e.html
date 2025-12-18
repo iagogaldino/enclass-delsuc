@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.5;
+            margin: 0;
+            padding: 1rem;
+        }
+        h1 {
+            text-align: center;
+            color: #ff00cc;
+            border: 2px solid #ff00cc;
+            border-radius: 20px;
+            padding: 10px;
+            display: inline-block;
+        }
+        h2 {
+            color: #2d2d2d;
+            margin-top: 1rem;
+        }
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        form > p {
+            margin: 0.5rem 0;
+        }
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        textarea {
+            height: 60px;
+            resize: none;
+        }
+        .questionnaire {
+            display: flex;
+            align-items: flex-start;
+        }
+        .questionnaire form {
+            flex: 1;
+        }
+        .questionnaire img {
+            width: 150px;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>PRACTICE</h1>
+        <section>
+            <h2>Complete the sentences:</h2>
+            <form>
+                <p>a) I am <input type="text" name="age" id="age"> years old</p>
+                <p>b) I have <input type="text" name="sisters" id="sisters"> sisters</p>
+                <p>c) I don’t like to <input type="text" name="drink" id="drink"> beer</p>
+                <p>d) I <input type="text" name="prefer" id="prefer"> to <input type="text" name="soda" id="soda"> soda</p>
+                <p>e) I <input type="text" name="siblings" id="siblings"> one brother and two sisters</p>
+                <p>f) Hello, how <input type="text" name="greeting" id="greeting"> you?</p>
+                <p>g) I <input type="text" name="years" id="years"> seventeen years</p>
+                <p>h) <input type="text" name="like" id="like"> you like <input type="text" name="eat" id="eat"> eat apple?</p>
+            </form>
+        </section>
+        <section>
+            <h2>Answer the questions:</h2>
+            <div class="questionnaire">
+                <form>
+                    <p>a) How old are you?</p>
+                    <textarea name="question1" id="question1"></textarea>
+                    <p>b) Do you have siblings? If so, How many?</p>
+                    <textarea name="question2" id="question2"></textarea>
+                    <p>c) Do you like to drink beer or soda?</p>
+                    <textarea name="question3" id="question3"></textarea>
+                    <p>d) Do you have a partner?</p>
+                    <textarea name="question4" id="question4"></textarea>
+                    <p>e) What year were you born?</p>
+                    <textarea name="question5" id="question5"></textarea>
+                    <p>f) What year are we in?</p>
+                    <textarea name="question6" id="question6"></textarea>
+                </form>
+                <img src="https://via.placeholder.com/150x150" alt="Illustration">
+            </div>
+        </section>
+    </div>
+</body>
+</html>

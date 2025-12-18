@@ -1,0 +1,417 @@
+<div class="html-generator-container">
+  <!-- Subtitles overlay - Global, appears above all content -->
+  @if (showSubtitles() && (lrcParagraphs().length > 0 || lrcData().length > 0 || subtitleWords().length > 0)) {
+    <div class="subtitle-container global-subtitle">
+      <div class="subtitle-text" [class.karaoke-text]="lrcParagraphs().length === 0 && lrcData().length === 0" [class.paragraph-text]="lrcParagraphs().length > 0">
+        @if (lrcParagraphs().length > 0) {
+          <!-- LRC-based subtitles by paragraph with word highlighting -->
+          @if (currentParagraphIndex() >= 0 && currentParagraphIndex() < lrcParagraphs().length) {
+            @let paragraph = lrcParagraphs()[currentParagraphIndex()];
+            @let hasWords = paragraph.words && paragraph.words.length > 0;
+            
+            <div class="subtitle-paragraph" [class.current-paragraph]="isAudioPlaying()" [class.word-highlight]="hasWords">
+              @if (hasWords) {
+                <!-- Show paragraph with word-by-word highlighting -->
+                @for (word of paragraph.words; track word.index; let i = $index) {
+                  <span 
+                    class="paragraph-word"
+                    [class.current-word]="i === currentWordIndex() && isAudioPlaying()"
+                    [class.past-word]="i < currentWordIndex() && isAudioPlaying()">
+                    {{ word.text }}
+                  </span>
+                }
+              } @else {
+                <!-- Fallback: show paragraph text without word highlighting -->
+                {{ paragraph.text }}
+              }
+            </div>
+          } @else if (lrcParagraphs().length > 0) {
+            <!-- Show first paragraph when audio hasn't started yet -->
+            @let firstParagraph = lrcParagraphs()[0];
+            <div class="subtitle-paragraph">
+              {{ firstParagraph.text }}
+            </div>
+          }
+        } @else if (lrcData().length > 0) {
+          <!-- Fallback: LRC line-by-line -->
+          @for (line of lrcData(); track $index; let i = $index) {
+            <span 
+              class="subtitle-word"
+              [class.current-word]="i === currentLRCIndex() && isAudioPlaying()"
+              [class.past-word]="i < currentLRCIndex() && isAudioPlaying()">
+              {{ line.text }}
+            </span>
+          }
+        } @else if (subtitleWords().length > 0) {
+          <!-- Fallback: word-based subtitles -->
+          @for (word of subtitleWords(); track $index; let i = $index) {
+            <span 
+              class="subtitle-word"
+              [class.current-word]="i === currentWordIndex() && isAudioPlaying()"
+              [class.past-word]="i < currentWordIndex() && isAudioPlaying()">
+              {{ word }}
+            </span>
+          }
+        }
+      </div>
+    </div>
+  }
+  @if (loadingScreenshot() || processing()) {
+    <div class="loading-container">
+      <mat-card class="loading-card">
+        <mat-card-content>
+          <div class="spinner-container">
+            <mat-spinner diameter="60"></mat-spinner>
+          </div>
+          <h2>Carregando aula...</h2>
+          <p class="loading-subtitle">Preparando conteúdo da página {{ pageNumber() || 'N/A' }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+  @if (error() && !loadingScreenshot() && !processing()) {
+    <div class="error-container">
+      <mat-card class="error-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon color="warn">error</mat-icon>
+            Erro
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="error-message">{{ error() }}</p>
+          @if (screenshotId()) {
+            <mat-chip-set>
+              <mat-chip>
+                <mat-icon>tag</mat-icon>
+                PDF: {{ pdfId() }} - Página: {{ pageNumber() }}
+              </mat-chip>
+            </mat-chip-set>
+          }
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="reload()">
+            <mat-icon>refresh</mat-icon>
+            Tentar Novamente
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  }
+
+  @if (screenshot() && !loadingScreenshot() && !processing() && !error() && (!htmlContent() || !showHTMLView())) {
+    <div class="main-layout">
+      <mat-sidenav-container class="sidenav-container">
+        <!-- Sidebar com Navegação -->
+        <mat-sidenav 
+          mode="side" 
+          [opened]="sidenavOpened()" 
+          [fixedInViewport]="true"
+          class="buttons-sidenav">
+          <div class="sidenav-content">
+            <mat-nav-list>
+              <!-- Navigation Buttons -->
+              <div class="navigation-buttons">
+                <button mat-icon-button (click)="previousPage()" [disabled]="!canGoPrevious() || loadingScreenshot()" class="nav-page-button" [title]="'Página Anterior'">
+                  <mat-icon>chevron_left</mat-icon>
+                </button>
+                <span class="page-indicator">
+                  @if (loadingPageCount()) {
+                    <mat-spinner diameter="16"></mat-spinner>
+                  } @else {
+                    {{ pageNumber() }}{{ totalPages() > 0 ? ' / ' + totalPages() : '' }}
+                  }
+                </span>
+                <button mat-icon-button (click)="nextPage()" [disabled]="!canGoNext() || loadingScreenshot()" class="nav-page-button" [title]="'Próxima Página'">
+                  <mat-icon>chevron_right</mat-icon>
+                </button>
+              </div>
+              
+              @if (audioUrl() || screenshot()?.audioUrl) {
+                <a mat-list-item (click)="playAudio(); $event.preventDefault()" class="nav-button play-audio-button" href="#">
+                  <mat-icon matListItemIcon>play_circle</mat-icon>
+                  <span matListItemTitle>Reproduzir Áudio</span>
+                </a>
+              }
+              <a mat-list-item (click)="generateOrShowHTML(); $event.preventDefault()" 
+                 [class.disabled]="generatingHTML() || loadingScreenshot()" 
+                 class="nav-button generate-html-button" href="#">
+                @if (generatingHTML()) {
+                  <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+                } @else if (htmlContent()) {
+                  <mat-icon matListItemIcon>{{ showHTMLView() ? 'image' : 'code' }}</mat-icon>
+                  <span matListItemTitle>{{ showHTMLView() ? 'Ver Screenshot' : 'Ver HTML' }}</span>
+                } @else {
+                  <mat-icon matListItemIcon>code</mat-icon>
+                  <span matListItemTitle>Gerar HTML</span>
+                }
+              </a>
+              @if (exercises().length > 0) {
+                <a mat-list-item (click)="toggleExercises(); $event.preventDefault()" class="nav-button view-exercises-button" href="#">
+                  <mat-icon matListItemIcon>{{ showExercises() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  <span matListItemTitle>{{ showExercises() ? 'Ocultar Exercícios' : 'Ver Exercícios' }}</span>
+                </a>
+              }
+              <a mat-list-item (click)="openSettingsModal(); $event.preventDefault()" class="nav-button settings-nav-button" href="#">
+                <mat-icon matListItemIcon>settings</mat-icon>
+                <span matListItemTitle>Configurações</span>
+              </a>
+            </mat-nav-list>
+          </div>
+        </mat-sidenav>
+
+        <!-- Conteúdo Principal -->
+        <mat-sidenav-content>
+          <div class="page-container">
+            @if (!sidenavOpened()) {
+              <button mat-icon-button class="toggle-sidenav-button" (click)="sidenavOpened.set(!sidenavOpened())">
+                <mat-icon>menu</mat-icon>
+              </button>
+            }
+            <div class="video-participants-container">
+              <div class="teacher-video-container">
+                <div class="teacher-video">
+                  <div class="teacher-avatar" [class.speaking]="isAudioPlaying()">
+                    <mat-icon>person</mat-icon>
+                  </div>
+                  <div class="teacher-name">Teacher</div>
+                </div>
+              </div>
+              <div class="student-video-container">
+                <div class="student-video">
+                  <div class="student-avatar">
+                    <mat-icon>person</mat-icon>
+                  </div>
+                  <div class="student-name">Student</div>
+                </div>
+              </div>
+            </div>
+            @if (showExercises() && exercises().length > 0) {
+              <div class="exercises-container">
+                <mat-card class="exercises-card">
+                  <mat-card-header>
+                    <mat-card-title>
+                      <mat-icon>quiz</mat-icon>
+                      Exercícios Gerados
+                    </mat-card-title>
+                    @if (showAnswers()) {
+                      <mat-card-subtitle>
+                        Pontuação: {{ getScore() }}%
+                      </mat-card-subtitle>
+                    }
+                  </mat-card-header>
+                  <mat-card-content>
+                    @for (exercise of exercises(); track $index; let exerciseIndex = $index) {
+                      <div class="exercise-item">
+                        <h3 class="exercise-question">
+                          {{ exerciseIndex + 1 }}. {{ exercise.question }}
+                        </h3>
+                        <div class="exercise-options">
+                          @for (option of exercise.options; track $index; let optionIndex = $index) {
+                            <button 
+                              mat-stroked-button 
+                              [class.correct]="isCorrect(exerciseIndex, optionIndex)"
+                              [class.incorrect]="showAnswers() && isSelected(exerciseIndex, optionIndex) && !isCorrect(exerciseIndex, optionIndex)"
+                              [class.selected]="isSelected(exerciseIndex, optionIndex) && !showAnswers()"
+                              (click)="selectAnswer(exerciseIndex, optionIndex)"
+                              class="option-button">
+                              <span class="option-label">{{ getOptionLabel(optionIndex) }}.</span>
+                              <span class="option-text">{{ option }}</span>
+                              @if (showAnswers() && isCorrect(exerciseIndex, optionIndex)) {
+                                <mat-icon class="correct-icon">check_circle</mat-icon>
+                              }
+                              @if (showAnswers() && isSelected(exerciseIndex, optionIndex) && !isCorrect(exerciseIndex, optionIndex)) {
+                                <mat-icon class="incorrect-icon">cancel</mat-icon>
+                              }
+                            </button>
+                          }
+                        </div>
+                        @if (showAnswers()) {
+                          <div class="exercise-explanation">
+                            <mat-icon>info</mat-icon>
+                            <span>{{ exercise.explanation }}</span>
+                          </div>
+                        }
+                      </div>
+                    }
+                  </mat-card-content>
+                  <mat-card-actions>
+                    <button mat-raised-button color="primary" (click)="toggleAnswers()">
+                      @if (showAnswers()) {
+                        <mat-icon>visibility_off</mat-icon>
+                        Ocultar Respostas
+                      } @else {
+                        <mat-icon>visibility</mat-icon>
+                        Mostrar Respostas
+                      }
+                    </button>
+                    <button mat-stroked-button (click)="closeExercises()">
+                      <mat-icon>close</mat-icon>
+                      Fechar Exercícios
+                    </button>
+                  </mat-card-actions>
+                </mat-card>
+              </div>
+            } @else {
+              <div class="screenshot-full-content-wrapper">
+                <div class="screenshot-content-container">
+                  <img [src]="screenshotUrl()" [alt]="'Screenshot ' + screenshotId()" class="screenshot-full-image" />
+                </div>
+                <div class="screenshot-page-footer">
+                  <span class="page-number">{{ pageNumber() }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </mat-sidenav-content>
+      </mat-sidenav-container>
+      
+    </div>
+  }
+
+  @if (htmlContent() && showHTMLView() && !generatingHTML() && !error()) {
+    <div class="main-layout">
+      <mat-sidenav-container class="sidenav-container">
+        <!-- Sidebar com Navegação -->
+        <mat-sidenav 
+          mode="side" 
+          [opened]="sidenavOpened()" 
+          [fixedInViewport]="true"
+          class="buttons-sidenav">
+          <div class="sidenav-content">
+            <mat-nav-list>
+              <!-- Navigation Buttons -->
+              <div class="navigation-buttons">
+                <button mat-icon-button (click)="previousPage()" [disabled]="!canGoPrevious() || loadingScreenshot()" class="nav-page-button" [title]="'Página Anterior'">
+                  <mat-icon>chevron_left</mat-icon>
+                </button>
+                <span class="page-indicator">
+                  @if (loadingPageCount()) {
+                    <mat-spinner diameter="16"></mat-spinner>
+                  } @else {
+                    {{ pageNumber() }}{{ totalPages() > 0 ? ' / ' + totalPages() : '' }}
+                  }
+                </span>
+                <button mat-icon-button (click)="nextPage()" [disabled]="!canGoNext() || loadingScreenshot()" class="nav-page-button" [title]="'Próxima Página'">
+                  <mat-icon>chevron_right</mat-icon>
+                </button>
+              </div>
+              
+              @if (audioUrl() || screenshot()?.audioUrl) {
+                <a mat-list-item (click)="playAudio(); $event.preventDefault()" class="nav-button play-audio-button" href="#">
+                  <mat-icon matListItemIcon>play_circle</mat-icon>
+                  <span matListItemTitle>Reproduzir Áudio</span>
+                </a>
+              }
+              @if (screenshot() && htmlContent()) {
+                <a mat-list-item (click)="toggleViewMode(); $event.preventDefault()" class="nav-button toggle-view-button" href="#">
+                  <mat-icon matListItemIcon>{{ showHTMLView() ? 'image' : 'code' }}</mat-icon>
+                  <span matListItemTitle>{{ showHTMLView() ? 'Ver Screenshot' : 'Ver HTML' }}</span>
+                </a>
+              }
+              @if (exercises().length > 0) {
+                <a mat-list-item (click)="toggleExercises(); $event.preventDefault()" class="nav-button view-exercises-button" href="#">
+                  <mat-icon matListItemIcon>{{ showExercises() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  <span matListItemTitle>{{ showExercises() ? 'Ocultar Exercícios' : 'Ver Exercícios' }}</span>
+                </a>
+              }
+              <a mat-list-item (click)="openSettingsModal(); $event.preventDefault()" class="nav-button settings-nav-button" href="#">
+                <mat-icon matListItemIcon>settings</mat-icon>
+                <span matListItemTitle>Configurações</span>
+              </a>
+            </mat-nav-list>
+          </div>
+        </mat-sidenav>
+
+        <!-- Conteúdo Principal -->
+        <mat-sidenav-content>
+          <div class="page-container html-container">
+            @if (!sidenavOpened()) {
+              <button mat-icon-button class="toggle-sidenav-button" (click)="sidenavOpened.set(!sidenavOpened())">
+                <mat-icon>menu</mat-icon>
+              </button>
+            }
+            <div class="video-participants-container">
+              <div class="teacher-video-container">
+                <div class="teacher-video">
+                  <div class="teacher-avatar" [class.speaking]="isAudioPlaying()">
+                    <mat-icon>person</mat-icon>
+                  </div>
+                  <div class="teacher-name">Teacher</div>
+                </div>
+              </div>
+              <div class="student-video-container">
+                <div class="student-video">
+                  <div class="student-avatar">
+                    <mat-icon>person</mat-icon>
+                  </div>
+                  <div class="student-name">Student</div>
+                </div>
+              </div>
+            </div>
+            <div class="html-full-content-wrapper">
+              <div class="html-content-header">
+                <mat-chip-set>
+                  <mat-chip>
+                    <mat-icon>code</mat-icon>
+                    HTML Gerado por IA
+                  </mat-chip>
+                </mat-chip-set>
+              </div>
+              <div class="html-content-container">
+                <div class="html-content" [innerHTML]="htmlContent()"></div>
+              </div>
+              <div class="html-page-footer">
+                <span class="page-number">{{ pageNumber() }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-sidenav-content>
+      </mat-sidenav-container>
+      
+    </div>
+  }
+
+  @if (generatingHTML()) {
+    <div class="generating-overlay">
+      <mat-card class="generating-card">
+        <mat-card-content>
+          <div class="spinner-container">
+            <mat-spinner diameter="60"></mat-spinner>
+          </div>
+          <h2>Gerando HTML a partir do screenshot...</h2>
+          <p>Aguarde enquanto processamos a imagem.</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+  @if (generatingAudio()) {
+    <div class="generating-overlay">
+      <mat-card class="generating-card">
+        <mat-card-content>
+          <div class="spinner-container">
+            <mat-spinner diameter="60"></mat-spinner>
+          </div>
+          <h2>Gerando explicação em áudio...</h2>
+          <p>Aguarde enquanto a professora prepara a explicação.</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+  @if (generatingExercises()) {
+    <div class="generating-overlay">
+      <mat-card class="generating-card">
+        <mat-card-content>
+          <div class="spinner-container">
+            <mat-spinner diameter="60"></mat-spinner>
+          </div>
+          <h2>Gerando exercícios...</h2>
+          <p>Aguarde enquanto criamos questões baseadas no conteúdo da página.</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+</div>
