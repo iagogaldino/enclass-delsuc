@@ -1,61 +1,4 @@
 <div class="html-generator-container">
-  <!-- Subtitles overlay - Global, appears above all content -->
-  @if (showSubtitles() && (lrcParagraphs().length > 0 || lrcData().length > 0 || subtitleWords().length > 0)) {
-    <div class="subtitle-container global-subtitle">
-      <div class="subtitle-text" [class.karaoke-text]="lrcParagraphs().length === 0 && lrcData().length === 0" [class.paragraph-text]="lrcParagraphs().length > 0">
-        @if (lrcParagraphs().length > 0) {
-          <!-- LRC-based subtitles by paragraph with word highlighting -->
-          @if (currentParagraphIndex() >= 0 && currentParagraphIndex() < lrcParagraphs().length) {
-            @let paragraph = lrcParagraphs()[currentParagraphIndex()];
-            @let hasWords = paragraph.words && paragraph.words.length > 0;
-            
-            <div class="subtitle-paragraph" [class.current-paragraph]="isAudioPlaying()" [class.word-highlight]="hasWords">
-              @if (hasWords) {
-                <!-- Show paragraph with word-by-word highlighting -->
-                @for (word of paragraph.words; track word.index; let i = $index) {
-                  <span 
-                    class="paragraph-word"
-                    [class.current-word]="i === currentWordIndex() && isAudioPlaying()"
-                    [class.past-word]="i < currentWordIndex() && isAudioPlaying()">
-                    {{ word.text }}
-                  </span>
-                }
-              } @else {
-                <!-- Fallback: show paragraph text without word highlighting -->
-                {{ paragraph.text }}
-              }
-            </div>
-          } @else if (lrcParagraphs().length > 0) {
-            <!-- Show first paragraph when audio hasn't started yet -->
-            @let firstParagraph = lrcParagraphs()[0];
-            <div class="subtitle-paragraph">
-              {{ firstParagraph.text }}
-            </div>
-          }
-        } @else if (lrcData().length > 0) {
-          <!-- Fallback: LRC line-by-line -->
-          @for (line of lrcData(); track $index; let i = $index) {
-            <span 
-              class="subtitle-word"
-              [class.current-word]="i === currentLRCIndex() && isAudioPlaying()"
-              [class.past-word]="i < currentLRCIndex() && isAudioPlaying()">
-              {{ line.text }}
-            </span>
-          }
-        } @else if (subtitleWords().length > 0) {
-          <!-- Fallback: word-based subtitles -->
-          @for (word of subtitleWords(); track $index; let i = $index) {
-            <span 
-              class="subtitle-word"
-              [class.current-word]="i === currentWordIndex() && isAudioPlaying()"
-              [class.past-word]="i < currentWordIndex() && isAudioPlaying()">
-              {{ word }}
-            </span>
-          }
-        }
-      </div>
-    </div>
-  }
   @if (loadingScreenshot() || processing()) {
     <div class="loading-container">
       <mat-card class="loading-card">
@@ -110,6 +53,10 @@
           [fixedInViewport]="true"
           class="buttons-sidenav">
           <div class="sidenav-content">
+            <!-- Header Profissional -->
+            <div class="sidenav-header">
+              <h3>Navegação</h3>
+            </div>
             <mat-nav-list>
               <!-- Navigation Buttons -->
               <div class="navigation-buttons">
@@ -130,7 +77,6 @@
               
               @if (audioUrl() || screenshot()?.audioUrl) {
                 <a mat-list-item (click)="playAudio(); $event.preventDefault()" class="nav-button play-audio-button" href="#">
-                  <mat-icon matListItemIcon>play_circle</mat-icon>
                   <span matListItemTitle>Reproduzir Áudio</span>
                 </a>
               }
@@ -140,21 +86,17 @@
                 @if (generatingHTML()) {
                   <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
                 } @else if (htmlContent()) {
-                  <mat-icon matListItemIcon>{{ showHTMLView() ? 'image' : 'code' }}</mat-icon>
                   <span matListItemTitle>{{ showHTMLView() ? 'Ver Screenshot' : 'Ver HTML' }}</span>
                 } @else {
-                  <mat-icon matListItemIcon>code</mat-icon>
                   <span matListItemTitle>Gerar HTML</span>
                 }
               </a>
               @if (exercises().length > 0) {
                 <a mat-list-item (click)="toggleExercises(); $event.preventDefault()" class="nav-button view-exercises-button" href="#">
-                  <mat-icon matListItemIcon>{{ showExercises() ? 'visibility_off' : 'visibility' }}</mat-icon>
                   <span matListItemTitle>{{ showExercises() ? 'Ocultar Exercícios' : 'Ver Exercícios' }}</span>
                 </a>
               }
               <a mat-list-item (click)="openSettingsModal(); $event.preventDefault()" class="nav-button settings-nav-button" href="#">
-                <mat-icon matListItemIcon>settings</mat-icon>
                 <span matListItemTitle>Configurações</span>
               </a>
             </mat-nav-list>
@@ -238,13 +180,8 @@
                   </mat-card-content>
                   <mat-card-actions>
                     <button mat-raised-button color="primary" (click)="toggleAnswers()">
-                      @if (showAnswers()) {
-                        <mat-icon>visibility_off</mat-icon>
-                        Ocultar Respostas
-                      } @else {
-                        <mat-icon>visibility</mat-icon>
-                        Mostrar Respostas
-                      }
+                      <mat-icon>{{ showAnswers() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                      {{ showAnswers() ? 'Ocultar Respostas' : 'Mostrar Respostas' }}
                     </button>
                     <button mat-stroked-button (click)="closeExercises()">
                       <mat-icon>close</mat-icon>
@@ -261,6 +198,63 @@
                 <div class="screenshot-page-footer">
                   <span class="page-number">{{ pageNumber() }}</span>
                 </div>
+                <!-- Subtitles area below screenshot -->
+                @if (showSubtitles() && (lrcParagraphs().length > 0 || lrcData().length > 0 || subtitleWords().length > 0)) {
+                  <div class="subtitle-container subtitle-below-content">
+                    <div class="subtitle-text" [class.karaoke-text]="lrcParagraphs().length === 0 && lrcData().length === 0" [class.paragraph-text]="lrcParagraphs().length > 0">
+                      @if (lrcParagraphs().length > 0) {
+                        <!-- LRC-based subtitles by paragraph with word highlighting -->
+                        @if (currentParagraphIndex() >= 0 && currentParagraphIndex() < lrcParagraphs().length) {
+                          @let paragraph = lrcParagraphs()[currentParagraphIndex()];
+                          @let hasWords = paragraph.words && paragraph.words.length > 0;
+                          
+                          <div class="subtitle-paragraph" [class.current-paragraph]="isAudioPlaying()" [class.word-highlight]="hasWords">
+                            @if (hasWords) {
+                              <!-- Show paragraph with word-by-word highlighting -->
+                              @for (word of paragraph.words; track word.index; let i = $index) {
+                                <span 
+                                  class="paragraph-word"
+                                  [class.current-word]="i === currentWordIndex() && isAudioPlaying()"
+                                  [class.past-word]="i < currentWordIndex() && isAudioPlaying()">
+                                  {{ word.text }}
+                                </span>
+                              }
+                            } @else {
+                              <!-- Fallback: show paragraph text without word highlighting -->
+                              {{ paragraph.text }}
+                            }
+                          </div>
+                        } @else if (lrcParagraphs().length > 0) {
+                          <!-- Show first paragraph when audio hasn't started yet -->
+                          @let firstParagraph = lrcParagraphs()[0];
+                          <div class="subtitle-paragraph">
+                            {{ firstParagraph.text }}
+                          </div>
+                        }
+                      } @else if (lrcData().length > 0) {
+                        <!-- Fallback: LRC line-by-line -->
+                        @for (line of lrcData(); track $index; let i = $index) {
+                          <span 
+                            class="subtitle-word"
+                            [class.current-word]="i === currentLRCIndex() && isAudioPlaying()"
+                            [class.past-word]="i < currentLRCIndex() && isAudioPlaying()">
+                            {{ line.text }}
+                          </span>
+                        }
+                      } @else if (subtitleWords().length > 0) {
+                        <!-- Fallback: word-based subtitles -->
+                        @for (word of subtitleWords(); track $index; let i = $index) {
+                          <span 
+                            class="subtitle-word"
+                            [class.current-word]="i === currentWordIndex() && isAudioPlaying()"
+                            [class.past-word]="i < currentWordIndex() && isAudioPlaying()">
+                            {{ word }}
+                          </span>
+                        }
+                      }
+                    </div>
+                  </div>
+                }
               </div>
             }
           </div>
@@ -280,6 +274,10 @@
           [fixedInViewport]="true"
           class="buttons-sidenav">
           <div class="sidenav-content">
+            <!-- Header Profissional -->
+            <div class="sidenav-header">
+              <h3>Navegação</h3>
+            </div>
             <mat-nav-list>
               <!-- Navigation Buttons -->
               <div class="navigation-buttons">
@@ -300,24 +298,20 @@
               
               @if (audioUrl() || screenshot()?.audioUrl) {
                 <a mat-list-item (click)="playAudio(); $event.preventDefault()" class="nav-button play-audio-button" href="#">
-                  <mat-icon matListItemIcon>play_circle</mat-icon>
                   <span matListItemTitle>Reproduzir Áudio</span>
                 </a>
               }
               @if (screenshot() && htmlContent()) {
                 <a mat-list-item (click)="toggleViewMode(); $event.preventDefault()" class="nav-button toggle-view-button" href="#">
-                  <mat-icon matListItemIcon>{{ showHTMLView() ? 'image' : 'code' }}</mat-icon>
                   <span matListItemTitle>{{ showHTMLView() ? 'Ver Screenshot' : 'Ver HTML' }}</span>
                 </a>
               }
               @if (exercises().length > 0) {
                 <a mat-list-item (click)="toggleExercises(); $event.preventDefault()" class="nav-button view-exercises-button" href="#">
-                  <mat-icon matListItemIcon>{{ showExercises() ? 'visibility_off' : 'visibility' }}</mat-icon>
                   <span matListItemTitle>{{ showExercises() ? 'Ocultar Exercícios' : 'Ver Exercícios' }}</span>
                 </a>
               }
               <a mat-list-item (click)="openSettingsModal(); $event.preventDefault()" class="nav-button settings-nav-button" href="#">
-                <mat-icon matListItemIcon>settings</mat-icon>
                 <span matListItemTitle>Configurações</span>
               </a>
             </mat-nav-list>
@@ -365,6 +359,63 @@
               <div class="html-page-footer">
                 <span class="page-number">{{ pageNumber() }}</span>
               </div>
+              <!-- Subtitles area below HTML -->
+              @if (showSubtitles() && (lrcParagraphs().length > 0 || lrcData().length > 0 || subtitleWords().length > 0)) {
+                <div class="subtitle-container subtitle-below-content">
+                  <div class="subtitle-text" [class.karaoke-text]="lrcParagraphs().length === 0 && lrcData().length === 0" [class.paragraph-text]="lrcParagraphs().length > 0">
+                    @if (lrcParagraphs().length > 0) {
+                      <!-- LRC-based subtitles by paragraph with word highlighting -->
+                      @if (currentParagraphIndex() >= 0 && currentParagraphIndex() < lrcParagraphs().length) {
+                        @let paragraph = lrcParagraphs()[currentParagraphIndex()];
+                        @let hasWords = paragraph.words && paragraph.words.length > 0;
+                        
+                        <div class="subtitle-paragraph" [class.current-paragraph]="isAudioPlaying()" [class.word-highlight]="hasWords">
+                          @if (hasWords) {
+                            <!-- Show paragraph with word-by-word highlighting -->
+                            @for (word of paragraph.words; track word.index; let i = $index) {
+                              <span 
+                                class="paragraph-word"
+                                [class.current-word]="i === currentWordIndex() && isAudioPlaying()"
+                                [class.past-word]="i < currentWordIndex() && isAudioPlaying()">
+                                {{ word.text }}
+                              </span>
+                            }
+                          } @else {
+                            <!-- Fallback: show paragraph text without word highlighting -->
+                            {{ paragraph.text }}
+                          }
+                        </div>
+                      } @else if (lrcParagraphs().length > 0) {
+                        <!-- Show first paragraph when audio hasn't started yet -->
+                        @let firstParagraph = lrcParagraphs()[0];
+                        <div class="subtitle-paragraph">
+                          {{ firstParagraph.text }}
+                        </div>
+                      }
+                    } @else if (lrcData().length > 0) {
+                      <!-- Fallback: LRC line-by-line -->
+                      @for (line of lrcData(); track $index; let i = $index) {
+                        <span 
+                          class="subtitle-word"
+                          [class.current-word]="i === currentLRCIndex() && isAudioPlaying()"
+                          [class.past-word]="i < currentLRCIndex() && isAudioPlaying()">
+                          {{ line.text }}
+                        </span>
+                      }
+                    } @else if (subtitleWords().length > 0) {
+                      <!-- Fallback: word-based subtitles -->
+                      @for (word of subtitleWords(); track $index; let i = $index) {
+                        <span 
+                          class="subtitle-word"
+                          [class.current-word]="i === currentWordIndex() && isAudioPlaying()"
+                          [class.past-word]="i < currentWordIndex() && isAudioPlaying()">
+                          {{ word }}
+                        </span>
+                      }
+                    }
+                  </div>
+                </div>
+              }
             </div>
           </div>
         </mat-sidenav-content>
